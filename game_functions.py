@@ -20,13 +20,16 @@ def check_event(ship, bullets, screen, ai_settings):
             key_up_event(event, ship)
 
 
-def update_screen(ai_settings, ship, screen, bullets):
+def update_screen(ai_settings, ship, screen, bullets, aliens):
     """更新屏幕"""
     # 填充背景颜色
     # 为屏幕显示对象填充颜色 fill方法只有一个参数，即为RGB形式的元组对象
     screen.fill(ai_settings.bg_color)
     # 绘制飞船
     ship.blitme()
+    # 绘制外星人舰队
+    for alien in aliens:
+        alien.draw_alien(aliens, bullets)
     # 绘制子弹
     for bullet in bullets:
         bullet.draw_bullet(bullets)
@@ -38,6 +41,7 @@ def update_screen(ai_settings, ship, screen, bullets):
 
 
 def key_down_event(event, ship, bullets, ai_setting, screen):
+    """键盘按压事件"""
     if event.key == pygame.K_RIGHT:
         ship_key_right(ship)
     elif event.key == pygame.K_LEFT:
@@ -49,6 +53,8 @@ def key_down_event(event, ship, bullets, ai_setting, screen):
     elif event.key == pygame.K_SPACE:
         # 按下空格键，则发射子弹
         fire_bullet(ship, bullets, screen, ai_setting)
+    elif event.key == pygame.K_q:
+        sys.exit()
 
 
 def key_up_event(event, ship):
