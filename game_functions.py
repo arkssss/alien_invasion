@@ -4,10 +4,6 @@ import pygame
 
 from bullet import Bullet
 
-from  pygame.sprite import Group
-
-from alien import Alien
-
 
 def check_event(ship, bullets, screen, ai_settings):
     """监视此时的事件"""
@@ -24,24 +20,21 @@ def check_event(ship, bullets, screen, ai_settings):
             key_up_event(event, ship)
 
 
-def update_screen(ai_settings, ship, screen, bullets, aliens, state):
+def update_screen(ai_settings, ship, screen, bullets, aliens):
     """更新屏幕"""
     # 填充背景颜色
     # 为屏幕显示对象填充颜色 fill方法只有一个参数，即为RGB形式的元组对象
     screen.fill(ai_settings.bg_color)
     # 绘制飞船
-    ship.update_pos()
-    # 绘制创建外星舰队
-    if len(aliens) == 0:
-        create_aliens(aliens, ai_settings, screen)
+    ship.blitme()
     # 绘制外星人舰队
     for alien in aliens:
-        alien.draw_alien(aliens, bullets, ship, state)
+        alien.draw_alien(aliens, bullets)
     # 绘制子弹
     for bullet in bullets:
         bullet.draw_bullet(bullets)
-    # 审查游戏参数
-    state.check_state()
+    # 更新飞船位置
+    ship.update_pos()
     # 刷新屏幕
     # 让最近绘制的屏幕可见，达到刷新屏幕的效果
     pygame.display.flip()
@@ -103,10 +96,3 @@ def fire_bullet(ship, bullets, screen, ai_setting):
         bullets.add(the_bullet)
     else:
         pass
-
-
-def create_aliens(aliens, ai_settings, screen):
-    """创建外星舰队"""
-    while len(aliens) < ai_settings.alien_allow_number:
-        alien = Alien(ai_settings, screen, aliens)
-        aliens.add(alien)
