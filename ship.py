@@ -50,3 +50,4 @@ class Ship:
             self.centery += self.setting.ship_speed
         #     更新
         self.rect.center = (self.centerx, self.centery)
+        self.blitme()
