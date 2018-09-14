@@ -14,24 +14,8 @@ class Ship:
         self.rect = self.image.get_rect()
         # 获得屏幕的外接矩形
         self.screen_rect = screen.get_rect()
-        self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.bottom
-        # self.rect.centery = self.screen_rect.centery
-        # self.rect.center = self.screen_rect.center
-        # rect的center属性为图像的中心点坐标，为一个元组
-        # 同样centerx，centery属性为图像中心点的x,y轴的坐标
-        # print(type(self.rect.center))
-        # print(type(self.rect.centerx))
-        # print(type(self.rect.bottom))
-        # print(self.screen_rect.right)
-        # 控制键盘按键持续移动的变量
-        self.continue_right = False
-        self.continue_left = False
-        self.continue_up = False
-        self.continue_down = False
-        # 小数的方式更加精细的控制
-        self.centerx = float(self.rect.centerx)
-        self.centery = float(self.rect.centery)
+        # 初始化
+        self.init_pos()
 
     def blitme(self):
         """绘制图像"""
@@ -50,3 +34,24 @@ class Ship:
             self.centery += self.setting.ship_speed
         #     更新
         self.rect.center = (self.centerx, self.centery)
+
+    def init_pos(self):
+        """初始化飞船的位置"""
+        self.rect.centerx = self.screen_rect.centerx
+        self.rect.bottom = self.screen_rect.bottom
+        # self.rect.centery = self.screen_rect.centery
+        # self.rect.center = self.screen_rect.center
+        # rect的center属性为图像的中心点坐标，为一个元组
+        # 同样centerx，centery属性为图像中心点的x,y轴的坐标
+        # print(type(self.rect.center))
+        # print(type(self.rect.centerx))
+        # print(type(self.rect.bottom))
+        # print(self.screen_rect.right)
+        # 控制键盘按键持续移动的变量
+        self.continue_right = False
+        self.continue_left = False
+        self.continue_up = False
+        self.continue_down = False
+        # 小数的方式更加精细的控制
+        self.centerx = float(self.rect.centerx)
+        self.centery = float(self.rect.centery)

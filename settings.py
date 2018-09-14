@@ -19,8 +19,8 @@ class Setting:
         self.bullet_speed = 3
         self.bullet_allow_number = 3
         # 关于外星飞船
-        self.alien_x_speed = 3
-        self.alien_y_speed = 0.5
+        self.alien_x_speed = 0.1
+        self.alien_y_speed = 0.1
         self.alien_allow_number = 40
         # 关于游戏模式
         self.game_mode = 2

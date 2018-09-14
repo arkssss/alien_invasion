@@ -4,6 +4,8 @@ import pygame
 
 from bullet import Bullet
 
+from alien import Alien
+
 
 def check_event(ship, bullets, screen, ai_settings):
     """监视此时的事件"""
@@ -29,7 +31,7 @@ def update_screen(ai_settings, ship, screen, bullets, aliens):
     ship.blitme()
     # 绘制外星人舰队
     for alien in aliens:
-        alien.draw_alien(aliens, bullets)
+        alien.draw_alien(aliens, bullets, ship)
     # 绘制子弹
     for bullet in bullets:
         bullet.draw_bullet(bullets)
@@ -96,3 +98,6 @@ def fire_bullet(ship, bullets, screen, ai_setting):
         bullets.add(the_bullet)
     else:
         pass
+
+
+
