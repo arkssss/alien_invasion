@@ -31,7 +31,6 @@ class Alien(Sprite):
         self.fly_increase = -1
         # fly_increase_y表示y轴方向飞行增量 (目前仅为正)
         self.fly_increase_y = -1
-        print(self.screen_rect.right)
         # mode_one的初始化
         if ai_setting.game_mode == 1:
             self.init_for_mode_one(ai_setting)
@@ -44,7 +43,6 @@ class Alien(Sprite):
 
     def draw_alien(self, aliens, bullets, ship):
         """绘制外星人飞船"""
-        self.update(aliens, bullets, ship)
         self.rect.left = self.x
         self.rect.top = self.y
         self.screen.blit(self.image, self.rect)
@@ -82,7 +80,7 @@ class Alien(Sprite):
         self.fly_increase = self.speed * self.fly_mode
         self.fly_increase_y = self.speed_y
 
-    def update_mode_two(self, aliens, bullets, ship):
+    def update_mode_two(self, aliens, bullets, ship, current_state):
         """第二种更新方式"""
         # 移动飞船
         self.x += self.fly_increase
@@ -90,18 +88,18 @@ class Alien(Sprite):
         # 是否撞到墙
         self.is_knock_wall()
         # 判断是否有子弹击中，如果有则删除子弹和飞船
-        self.is_hit_and_deal(aliens, bullets)
+        self.is_hit_and_deal(aliens, bullets, current_state)
         # 判断飞船和外星舰队是否相撞如果是，则重新开始游戏
-        self.is_crash_and_deal(ship, aliens)
+        self.is_crash_and_deal(ship, aliens, current_state, bullets)
         # 判断飞船是否撞到底部屏幕
-        self.is_crash_screen_bottom(aliens, self.screen_rect, self.screen, ship, self.setting)
+        self.is_crash_screen_bottom(aliens, self.screen_rect, self.screen, ship, self.setting, current_state, bullets)
 
-    def update(self, aliens, bullets, ship):
+    def update(self, aliens, bullets, ship, current_state):
         """更新外星飞船位置，重载的方法"""
         if self.setting.game_mode == 1:
             self.update_mode_one(aliens, bullets)
         if self.setting.game_mode == 2:
-            self.update_mode_two(aliens, bullets, ship)
+            self.update_mode_two(aliens, bullets, ship, current_state)
 
     def is_knock_wall(self):
         """判断飞船是否撞到了墙,如果是则翻转方向"""
@@ -109,11 +107,12 @@ class Alien(Sprite):
             self.fly_mode = -1 if self.fly_mode == 1 else 1
             self.fly_increase = self.speed * self.fly_mode
 
-    def is_crash_and_deal(self, ship, aliens):
+    def is_crash_and_deal(self, ship, aliens, current_state, bullets):
         """判断飞船和外星舰队是否相撞"""
         if pygame.sprite.spritecollideany(ship, aliens):
             # 如果相撞则重新开始游戏
-            self.restart_game(ship, aliens, self.setting, self.screen)
+            current_state.ship_left_number -= 1
+            self.restart_game(ship, aliens, self.setting, self.screen, bullets)
 
     def chose_mode_function(self, current_mode, aliens):
         """根据不同的mode选择不同的初始化方式"""
@@ -123,15 +122,20 @@ class Alien(Sprite):
             self.init_for_mode_two(aliens)
 
     @staticmethod
-    def is_crash_screen_bottom(aliens, screen_rect, screen, ship, setting):
+    def is_crash_screen_bottom(aliens, screen_rect, screen, ship, setting, current_state, bullets):
         """判断飞船是否撞到了屏幕底端"""
+        is_crash = False
         for alien in aliens:
             """遍历每一个alien，检查有没有低端碰到到屏幕的底端"""
             if alien.rect.bottom > screen_rect.bottom:
-                Alien.restart_game(ship, aliens, setting, screen)
+                is_crash = True
+                break
+        if is_crash:
+            current_state.ship_left_number -= 1
+            Alien.restart_game(ship, aliens, setting, screen, bullets)
 
     @staticmethod
-    def is_hit_and_deal(aliens, bullets):
+    def is_hit_and_deal(aliens, bullets, current_state):
         """判断子弹是否击中了飞船"""
         # 飞船的x,y轴区域 , 子弹打中飞船
         # x_area = [self.rect.left, self.rect.right]
@@ -147,6 +151,8 @@ class Alien(Sprite):
         # 仅需要一行代码
         collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
         if collisions:
+            for aliens in collisions.values():
+                current_state.current_point += (len(aliens) * current_state.alien_point)
             return True
         else:
             return False
@@ -159,9 +165,12 @@ class Alien(Sprite):
             aliens.add(alien)
 
     @staticmethod
-    def restart_game(ship, aliens, setting, screen):
+    def restart_game(ship, aliens, setting, screen, bullets):
         """重新启动游戏"""
+        # 重置游戏 显示鼠标
+        bullets.empty()
         aliens.empty()
         ship.init_pos()
         Alien.init_aliens_group(aliens, setting, screen)
         sleep(0.5)
+
