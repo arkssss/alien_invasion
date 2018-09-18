@@ -4,7 +4,7 @@ import pygame
 # 飞船类
 class Ship:
     # screen传入为整个屏幕对象，目的是指出飞船的绘制地点
-    def __init__(self, screen, ai_setting):
+    def __init__(self, screen, ai_setting, ships, mode=0):
         """初始化飞船并设置其初试位置"""
         self.setting = ai_setting
         self.screen = screen
@@ -14,8 +14,11 @@ class Ship:
         self.rect = self.image.get_rect()
         # 获得屏幕的外接矩形
         self.screen_rect = screen.get_rect()
-        # 初始化
-        self.init_pos()
+        # 操作者控制的飞船初化初始化
+        if not mode:
+            self.init_pos()
+        elif mode == 1:
+            self.init_icon_ship(ships)
 
     def blitme(self):
         """绘制图像"""
@@ -55,3 +58,33 @@ class Ship:
         # 小数的方式更加精细的控制
         self.centerx = float(self.rect.centerx)
         self.centery = float(self.rect.centery)
+
+    def init_icon_ship(self, ships):
+        """初始化ships显示的位置"""
+        ships_len = len(ships)
+        self.rect.left = ships_len * self.rect.width
+        self.rect.top = self.setting.ship_icon_top
+
+    @staticmethod
+    def init_ships_group(ships, screen, ai_setting):
+        """初始化飞船组"""
+        while len(ships) < ai_setting.ship_allow_number:
+            ship = Ship(screen, ai_setting, ships, 1)
+            ship.init_icon_ship(ships)
+            ships.append(ship)
+
+    @staticmethod
+    def remove_ship(current_left, ships):
+        """对ships飞船组里面的飞船进行移除"""
+        if len(ships) == current_left:
+            pass
+        else:
+            remove_number = len(ships) - current_left
+            while remove_number != 0:
+                if len(ships):
+                    ships.pop()
+                    remove_number -= 1
+
+
+
+

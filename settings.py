@@ -13,20 +13,22 @@ class Setting:
         # 飞船速度
         self.ship_speed = 10
         self.ship_allow_number = 3
+        self.ship_icon_top = 10
         # 关于子弹
-        self.bullet_width = 1200
+        self.bullet_width = 3
         self.bullet_high = 10
         self.bullet_color = (90, 90, 90)
         self.bullet_speed = 10
-        self.bullet_allow_number = 3
+        self.bullet_allow_number = 10
         # 关于外星飞船
-        self.alien_x_speed = 10
-        self.alien_y_speed = 10
+        self.alien_top_offset = 100
+        self.alien_x_speed = 1
+        self.alien_y_speed = 1
         self.alien_score = 50
         # 保存初始的x，y轴的速度,方便在reset游戏的时候重新给定飞船的速度
         self.alien_origin_x_speed = self.alien_x_speed
         self.alien_origin_y_speed = self.alien_y_speed
-        self.alien_allow_number = 40
+        self.alien_allow_number = 20
         # 关于游戏模式
         self.game_mode = 2
         # 关于按钮样式
@@ -49,6 +51,10 @@ class Setting:
         self.board_right_offset = 20
         self.board_top_offset = 20
         self.board_font_size = 30
+        self.board_level_top_offset = self.board_top_offset + self.board_font_size + 10
+        # 关于文件读写
+        self.file_path = "record_file/"
+        self.file_name = "high_score.txt"
 
     def dynamic_speed(self):
         """动态的增加飞船的速度"""

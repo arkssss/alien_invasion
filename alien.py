@@ -9,6 +9,7 @@ class Alien(Sprite):
     def __init__(self, ai_setting, screen, aliens=""):
         # 调用基类构造函数
         super().__init__()
+        self.setting = ai_setting
         self.speed = ai_setting.alien_x_speed
         self.speed_y = ai_setting.alien_y_speed
         self.screen = screen
@@ -74,7 +75,7 @@ class Alien(Sprite):
         x_pos = (current_number % self.line_numbers) + 1
         y_pos = int((current_number / self.line_numbers))
         self.x = ((2 * x_pos) - 1) * self.rect.width
-        self.y = (self.rect.height + 25) * y_pos
+        self.y = (self.rect.height + 25) * y_pos + self.setting.alien_top_offset
         # 先默认向右飞
         self.fly_mode = 1
         self.fly_increase = self.speed * self.fly_mode
